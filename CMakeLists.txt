@@ -5,6 +5,9 @@ project(chess_engine LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_CXX_FLAGS_DEBUG_INIT "-g -gdwarf-4")
+set(CMAKE_CXX_FLAGS_RELEASE_INIT "")
+
 
 file(GLOB SOURCES src/*.cpp)
 
