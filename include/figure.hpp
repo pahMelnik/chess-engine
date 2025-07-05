@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ostream>
+#include <sys/types.h>
 
 enum class FigureType {
     Empty,
@@ -17,7 +18,6 @@ enum class Color {
     White
 };
 
-
 class Figure {
     public:
         Color color;
@@ -27,3 +27,11 @@ class Figure {
 };
 
 std::ostream& operator<<(std::ostream& os, const Figure& f);
+
+struct FigurePosition {
+    Figure figure;
+    uint position;
+};
+
+std::ostream &operator<<(std::ostream &os, FigurePosition &fp);
+std::ostream &operator<<(std::ostream &os, Color c);

@@ -8,7 +8,7 @@ std::ostream& operator<<(std::ostream& os, const Figure& f) {
     char c;
     switch (f.type) {
         case FigureType::Pawn:   c = 'P'; break;
-        case FigureType::Knight: c = 'K'; break;
+        case FigureType::Knight: c = 'N'; break;
         case FigureType::Bishop: c = 'B'; break;
         case FigureType::Rook:   c = 'R'; break;
         case FigureType::Queen:  c = 'Q'; break;
@@ -19,4 +19,20 @@ std::ostream& operator<<(std::ostream& os, const Figure& f) {
         c = tolower(c);
     os << c;
     return os;
-} 
+}
+std::ostream &operator<<(std::ostream &os, FigurePosition &fp) {
+  os << "Figure " << fp.figure << " Position " << fp.position;
+  return os;
+}
+std::ostream &operator<<(std::ostream &os, Color c) {
+  switch (c) {
+  case Color::Black:
+    os << "Black";
+    break;
+  case Color::White:
+    os << "White";
+    break;
+  }
+  return os;
+}
+
