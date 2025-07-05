@@ -12,6 +12,9 @@ CTestTestfile.cmake
 _deps
 CMakeUserPresets.json
 
+# binaries
+build
+
 # clangd
 .cache/
 compile_commands.json
