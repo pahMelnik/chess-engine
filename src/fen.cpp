@@ -5,46 +5,26 @@
 #include <cassert>
 #include <cctype>
 #include <cstddef>
+#include <cstdlib>
 #include <iostream>
 #include <ostream>
 #include <sstream>
 #include <string>
 #include <sys/types.h>
 
-void FenNotation::parce(std::string s) {
-    std::array<std::string, 6> fenParts;
-    std::stringstream ss(s);
-    std::string part;
-    int arrIndex = 0;
-    while (std::getline(ss, part, ' ')) {
-        fenParts[arrIndex] = part;
-        arrIndex++;
-    }
-
-    std::string enPassantSquareNotation = fenParts[3];
-    std::string halfmoveClockNotation = fenParts[4];
-    std::string fullmoveNumberNotation = fenParts[5];
-
-    parcePosition(fenParts[0]);
-    parceActiveColor(fenParts[1]);
-    parceCastingAvailability(fenParts[2]);
-    parceEnPassantSquare(fenParts[3]);
-    parceHalfmoveClock(fenParts[4]);
-    parceFullmoveNumber(fenParts[5]);
-}
-
-void FenNotation::parcePosition(std::string s) {
+FigurePositions parceFigurePositions(std::string str) {
+    FigurePositions figurePositions = {};
     uint row = 7;
     uint col = 0;
     int index = 0;
-    for (char c : s) {
+    for (char c : str) {
         if (c == '/') {
             row--;
             col = 0;
         } else if (isdigit(c)) {
             col += c - '0';
         } else {
-            /* Проверять, что буквы из списка доступных, иначе выводить ошибку */
+            /* TODO: Проверять, что буквы из списка доступных, иначе выводить ошибку */
             Color color = isupper(c) ? Color::White : Color::Black;
             FigureType type;
 
@@ -58,32 +38,38 @@ void FenNotation::parcePosition(std::string s) {
                 default: type = FigureType::Empty; break;
             }
             const uint position = row * 8 + col;
-            const Figure f = Figure(color, type);
-            FigurePosition fp = { f, position };
-            figurePositions[index] = fp;
+            const Figure figure = Figure(color, type);
+            FigurePosition figurePosition = { figure, position };
+
+            figurePositions[index] = figurePosition;
             index++;
             col++;
         }
     }
+    return figurePositions;
 }
 
-void FenNotation::parceActiveColor(std::string s) {
-    if (s.length() != 1) {
+Color parceActiveColor(std::string str) {
+    if (str.length() != 1) {
         assert("ERROR: active color is not a single character");
     }
-    switch (s[0]) {
+    switch (str[0]) {
         case 'w':
-            activeColor = Color::White;
-            break;
+            return Color::White;
         case 'b':
-            activeColor = Color::Black;
+            return Color::Black;
+        default:
+            std::cerr << "ERROR: unknown character " << str[0] << " for active color" << std::endl;
+            assert(true);
             break;
     }
+    /* FIX: Правильно ловить ошибки */
+    return Color::White;
 }
 
-void FenNotation::parceCastingAvailability(std::string s) {
-    CastingAvailability ca = {};
-    for (char c : s) {
+CastingAvailability parceCastingAvailability(std::string str) {
+    CastingAvailability castingAvailability = {};
+    for (char c : str) {
         switch (c) {
             case 'k': castingAvailability.BlackKingSide = true; break;
             case 'q': castingAvailability.BlackQueenSide = true; break;
@@ -96,42 +82,66 @@ void FenNotation::parceCastingAvailability(std::string s) {
                 break;
         }
     }
+    return castingAvailability;
 }
 
-void FenNotation::parceHalfmoveClock(std::string s) {
-    if (s == "-") {
-        halfmoveClock = 0;
+int parceEnPassantSquare(std::string str) {
+    if (str == "-") {
+        return -1;
     } else {
-        for (char c : s) {
+        return cellToIndex(str);
+    }
+}
+
+int parceHalfmoveClock(std::string str) {
+    if (str == "-") {
+        return 0;
+    } else {
+        for (char c : str) {
             if (! std::isdigit(c)) {
                 std::cerr << "ERROR: char '" << c << "' is not a digit";
                 assert(true);
             }
         }
-        halfmoveClock = std::stoi(s);
+        return std::stoi(str);
     }
 }
 
-void FenNotation::parceFullmoveNumber(std::string s) {
-    if (s == "-") {
-        fullmoveNumber = 0;
+int parceFullmoveNumber(std::string str) {
+    if (str == "-") {
+        return 0;
     } else {
-        for (char c : s) {
+        for (char c : str) {
             if (! std::isdigit(c)) {
                 std::cerr << "ERROR: char '" << c << "' is not a digit";
                 assert(true);
             }
         }
-        fullmoveNumber = std::stoi(s);
+        return std::stoi(str);
     }
 }
 
-void FenNotation::parceEnPassantSquare(std::string s) {
-    if (s == "-") {
-        enPassantSquare = -1;
-    } else {
-        enPassantSquare = cellToIndex(s);
+GameState parceFENNotaion(std::string str) {
+    std::array<std::string, 6> fenParts;
+    std::stringstream ss(str);
+    std::string part;
+    int arrIndex = 0;
+    while (std::getline(ss, part, ' ')) {
+        fenParts[arrIndex] = part;
+        arrIndex++;
     }
+
+    std::string enPassantSquareNotation = fenParts[3];
+    std::string halfmoveClockNotation = fenParts[4];
+    std::string fullmoveNumberNotation = fenParts[5];
+    GameState gs;
+    gs.figurePositions = parceFigurePositions(fenParts[0]);
+    gs.activeColor = parceActiveColor(fenParts[1]);
+    gs.castingAvailability = parceCastingAvailability(fenParts[2]);
+    gs.enPassantSquare = parceEnPassantSquare(fenParts[3]);
+    gs.halfmoveClock = parceHalfmoveClock(fenParts[4]);
+    gs.fullmoveNumber = parceFullmoveNumber(fenParts[5]);
+    return gs;
 }
 
 std::ostream& operator<<(std::ostream& os, CastingAvailability& c) {
@@ -144,16 +154,17 @@ std::ostream& operator<<(std::ostream& os, CastingAvailability& c) {
     }
     return os;
 }
-std::ostream& operator<<(std::ostream& os, FenNotation fen) {
+
+std::ostream& operator<<(std::ostream& os, GameState& gs) {
     os << "Figure positions:";
-    for(auto fp : fen.getFigurePositions()) {
+    for(auto fp : gs.figurePositions) {
         os << "\n\t" << fp;       
     }
-    os << "\nActive color: " << fen.getActiveColor()
-        << "\nCasting availability: " << fen.getCastingAvailability()
-        << "\nEn passant square: " << fen.getEnPassantSquare()
-        << "\nHalfmove Clock: " << fen.getHalfmoveClock()
-        << "\nFullmove number: " << fen.getFullmoveNumber()
+    os << "\nActive color: " << gs.activeColor
+        << "\nCasting availability: " << gs.castingAvailability
+        << "\nEn passant square: " << gs.enPassantSquare
+        << "\nHalfmove Clock: " << gs.halfmoveClock
+        << "\nFullmove number: " << gs.fullmoveNumber
         << std::endl;
     return os;
 }

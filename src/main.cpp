@@ -9,7 +9,7 @@ int main () {
     // ChessBoard board;
     // std::cout << board;
     std::string fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-    auto fn = FenNotation(fen);
+    auto fn = parceFENNotaion(fen);
     std::cout << fn;
     return 0;
 }
