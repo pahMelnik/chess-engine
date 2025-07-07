@@ -1,9 +1,6 @@
 #include <ostream>
 #include "figure.hpp"
 
-Figure::Figure() : color(Color::Black), type( FigureType::Empty) {}
-Figure::Figure(Color c, FigureType t) : color(c), type(t) {}
-
 std::ostream& operator<<(std::ostream& os, const Figure& f) {
     char c;
     switch (f.type) {
@@ -20,19 +17,17 @@ std::ostream& operator<<(std::ostream& os, const Figure& f) {
     os << c;
     return os;
 }
-std::ostream &operator<<(std::ostream &os, FigurePosition &fp) {
-  os << "Figure " << fp.figure << " Position " << fp.position;
-  return os;
-}
-std::ostream &operator<<(std::ostream &os, Color c) {
-  switch (c) {
-  case Color::Black:
-    os << "Black";
-    break;
-  case Color::White:
-    os << "White";
-    break;
-  }
-  return os;
+
+std::ostream& operator<<(std::ostream& os, FigurePosition &fp) {
+    os << "Figure " << fp.figure << " Position " << fp.position;
+    return os;
 }
 
+std::ostream& operator<<(std::ostream& os, Color c) {
+    switch (c) {
+        case Color::Black: os << "Black"; break;
+        case Color::White: os << "White"; break;
+        case Color::Empty: os << "Empty"; break;
+    }
+    return os;
+}

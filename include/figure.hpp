@@ -15,23 +15,23 @@ enum class FigureType {
 
 enum class Color {
     Black,
-    White
+    White,
+    Empty
 };
 
 class Figure {
     public:
         Color color;
         FigureType type;
-        Figure(Color c, FigureType t);
-        Figure();
+        Figure() : color(Color::Empty), type(FigureType::Empty) {}
+        Figure(Color c, FigureType t) : color(c), type(t) {}
 };
-
-std::ostream& operator<<(std::ostream& os, const Figure& f);
 
 struct FigurePosition {
     Figure figure;
-    uint position;
+    uint   position;
 };
 
-std::ostream &operator<<(std::ostream &os, FigurePosition &fp);
-std::ostream &operator<<(std::ostream &os, Color c);
+std::ostream& operator<<(std::ostream& os, const Figure& f);
+std::ostream& operator<<(std::ostream& os, FigurePosition &fp);
+std::ostream& operator<<(std::ostream& os, Color c);

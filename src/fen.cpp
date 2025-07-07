@@ -131,9 +131,6 @@ GameState parceFENNotaion(std::string str) {
         arrIndex++;
     }
 
-    std::string enPassantSquareNotation = fenParts[3];
-    std::string halfmoveClockNotation = fenParts[4];
-    std::string fullmoveNumberNotation = fenParts[5];
     GameState gs;
     gs.figurePositions = parceFigurePositions(fenParts[0]);
     gs.activeColor = parceActiveColor(fenParts[1]);

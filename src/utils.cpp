@@ -1,5 +1,6 @@
 #include <cassert>
 #include <iostream>
+#include <string>
 #include "utils.hpp"
 
 int cellToIndex(std::string s) {
@@ -20,4 +21,22 @@ int cellToIndex(std::string s) {
         case 'h': row = 8; break;
     }
     return row * 8 + col;
+}
+
+std::string index_to_cell(int index) {
+    std::string result = "";
+    int row = index / 8 + 1;
+    int col = index - (row-1) * 8 + 1;
+    switch (row) {
+        case 1: result += 'a'; break;
+        case 2: result += 'b'; break;
+        case 3: result += 'c'; break;
+        case 4: result += 'd'; break;
+        case 5: result += 'e'; break;
+        case 6: result += 'f'; break;
+        case 7: result += 'g'; break;
+        case 8: result += 'h'; break;
+    }
+    result += std::to_string(col);
+    return result; 
 }
