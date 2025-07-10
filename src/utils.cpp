@@ -27,7 +27,7 @@ std::string index_to_cell(int index) {
     std::string result = "";
     int row = index / 8 + 1;
     int col = index - (row-1) * 8 + 1;
-    switch (row) {
+    switch (col) {
         case 1: result += 'a'; break;
         case 2: result += 'b'; break;
         case 3: result += 'c'; break;
@@ -37,6 +37,6 @@ std::string index_to_cell(int index) {
         case 7: result += 'g'; break;
         case 8: result += 'h'; break;
     }
-    result += std::to_string(col);
+    result += std::to_string(row);
     return result; 
 }

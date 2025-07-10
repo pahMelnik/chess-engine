@@ -19,8 +19,9 @@ public:
     ChessBoard(GameState gs);
     Figure get(int row, int col) const { return board_state[row * 8 + col]; }
     Figure get(int index) const { return board_state[index]; }
-    std::vector<Move> get_posible_moves();
+    std::vector<Move> get_pseudo_legal_moves();
     std::vector<Move> get_posible_moves(uint index);
+    static void print_empty_board();
 };
 
 std::ostream& operator<<(std::ostream& os, const ChessBoard& b);
